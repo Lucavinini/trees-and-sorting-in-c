@@ -54,6 +54,30 @@ Arv *arv_libera(Arv *a)
     return NULL;
 }
 
+static Arv *arv_libera_subarvore_rec(Arv *a, char raiz, int *encontrou)
+{
+    if (arv_vazia(a) || *encontrou) {
+        return a;
+    }
+
+    if (a->info == raiz) {
+        *encontrou = 1;
+        return arv_libera(a);
+    }
+
+    a->sae = arv_libera_subarvore_rec(a->sae, raiz, encontrou);
+    a->sad = arv_libera_subarvore_rec(a->sad, raiz, encontrou);
+
+    return a;
+}
+
+Arv *arv_libera_subarvore(Arv *a, char raiz)
+{
+    int encontrou = 0;
+
+    return arv_libera_subarvore_rec(a, raiz, &encontrou);
+}
+
 void arv_imprime(Arv *a)
 {
     if (!arv_vazia(a)) {
